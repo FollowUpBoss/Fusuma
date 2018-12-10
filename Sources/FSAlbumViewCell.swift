@@ -29,19 +29,19 @@ final class FSAlbumViewCell: UICollectionViewCell {
         super.awakeFromNib()
 
         isSelected = false
-        selectedLayer.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.5).cgColor
+        selectedLayer.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.4).cgColor
     }
 
     override var isSelected : Bool {
         didSet {
-            if selectedLayer.superlayer == self.layer {
+            if selectedLayer.superlayer == imageView.layer {
                 selectedLayer.removeFromSuperlayer()
                 checkmarkImageView.isHidden = true
             }
 
             if isSelected {
-                selectedLayer.frame = self.bounds
-                layer.addSublayer(selectedLayer)
+                selectedLayer.frame = imageView.bounds
+                imageView.layer.addSublayer(selectedLayer)
                 checkmarkImageView.isHidden = false
             }
         }
