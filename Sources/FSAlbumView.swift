@@ -131,7 +131,7 @@ final class FSAlbumView: UIView, UICollectionViewDataSource, UICollectionViewDel
     }
 
     @objc func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: IndexPath) -> CGSize {
-        let width = (collectionView.frame.width - 3) / 4
+        let width = (collectionView.frame.width - 3) / 3
         return CGSize(width: width, height: width)
     }
 
@@ -250,9 +250,6 @@ internal extension IndexSet {
 
 private extension FSAlbumView {
     func changeImage(_ asset: PHAsset) {
-
-        phAsset = asset
-
         DispatchQueue.global(qos: .default).async(execute: {
             let options = PHImageRequestOptions()
             options.isNetworkAccessAllowed = true

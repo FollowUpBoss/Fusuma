@@ -169,7 +169,7 @@
         </view>
     </objects>
     <resources>
-        <image name="ic_check" width="48" height="48"/>
-        <image name="ic_close" width="48" height="48"/>
+        <image name="ic_check" width="144" height="144"/>
+        <image name="ic_close" width="144" height="144"/>
     </resources>
 </document>
