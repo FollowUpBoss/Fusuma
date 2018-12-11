@@ -411,10 +411,11 @@ public struct ImageMetadata {
                 images.append(result)
                 metaData.append(self.getMetaData(asset: asset))
 
-                if asset == self.albumView.selectedAssets.last {
+                if images.count == self.albumView.selectedImages.count {
                     self.doDismiss {
                         self.delegate?.fusumaMultipleImageSelected(images, source: self.mode, metaData: metaData)
                     }
+                    return
                 }
             }
         }
