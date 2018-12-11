@@ -362,19 +362,9 @@ public struct ImageMetadata {
     }
 
     private func fusumaDidFinishInSingleMode() {
-        guard let view = albumView.imageCropView else { return }
-
+        guard let asset = self.albumView.phAsset else { return }
         if fusumaCropImage {
-            let normalizedX = view.contentOffset.x / view.contentSize.width
-            let normalizedY = view.contentOffset.y / view.contentSize.height
-
-            let normalizedWidth  = view.frame.width / view.contentSize.width
-            let normalizedHeight = view.frame.height / view.contentSize.height
-
-            let cropRect = CGRect(x: normalizedX, y: normalizedY,
-                                  width: normalizedWidth, height: normalizedHeight)
-
-            requestImage(with: self.albumView.phAsset, cropRect: cropRect) { (asset, image) in
+            requestImage(with: asset) { (asset, image) in
                 self.delegate?.fusumaImageSelected(image, source: self.mode)
                 self.doDismiss {
                     self.delegate?.fusumaDismissedWithImage(image, source: self.mode)
@@ -385,28 +375,22 @@ public struct ImageMetadata {
                 self.delegate?.fusumaImageSelected(image, source: self.mode, metaData: metaData)
             }
         } else {
-            delegate?.fusumaImageSelected(view.image, source: mode)
+            guard let image = self.albumView.selectedImages.first else { return }
+            delegate?.fusumaImageSelected(image, source: mode)
 
             doDismiss {
-                self.delegate?.fusumaDismissedWithImage(view.image, source: self.mode)
+                self.delegate?.fusumaDismissedWithImage(image, source: self.mode)
             }
         }
     }
 
-    private func requestImage(with asset: PHAsset, cropRect: CGRect, completion: @escaping (PHAsset, UIImage) -> Void) {
+    private func requestImage(with asset: PHAsset, completion: @escaping (PHAsset, UIImage) -> Void) {
         DispatchQueue.global(qos: .default).async(execute: {
             let options = PHImageRequestOptions()
             options.deliveryMode = .highQualityFormat
             options.isNetworkAccessAllowed = true
-            options.normalizedCropRect = cropRect
-            options.resizeMode = .exact
-
-            let targetWidth  = floor(CGFloat(asset.pixelWidth) * cropRect.width)
-            let targetHeight = floor(CGFloat(asset.pixelHeight) * cropRect.height)
-            let dimensionW   = max(min(targetHeight, targetWidth), 1024 * UIScreen.main.scale)
-            let dimensionH   = dimensionW * self.getCropHeightRatio()
-
-            let targetSize   = CGSize(width: dimensionW, height: dimensionH)
+            options.resizeMode = .fast
+            let targetSize   = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
 
             PHImageManager.default().requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { result, info in
                 guard let result = result else { return }
@@ -419,23 +403,11 @@ public struct ImageMetadata {
     }
 
     private func fusumaDidFinishInMultipleMode() {
-        guard let view = albumView.imageCropView else { return }
-
-        let normalizedX = view.contentOffset.x / view.contentSize.width
-        let normalizedY = view.contentOffset.y / view.contentSize.height
-        let normalizedWidth  = view.frame.width / view.contentSize.width
-        let normalizedHeight = view.frame.height / view.contentSize.height
-
-        let cropRect = CGRect(x: normalizedX,
-                              y: normalizedY,
-                              width: normalizedWidth,
-                              height: normalizedHeight)
-
         var images = [UIImage]()
         var metaData = [ImageMetadata]()
 
         for asset in albumView.selectedAssets {
-            requestImage(with: asset, cropRect: cropRect) { asset, result in
+            requestImage(with: asset) { asset, result in
                 images.append(result)
                 metaData.append(self.getMetaData(asset: asset))
 
