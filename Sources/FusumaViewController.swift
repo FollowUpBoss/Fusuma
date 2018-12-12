@@ -394,10 +394,7 @@ public struct ImageMetadata {
 
             PHImageManager.default().requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { result, info in
                 guard let result = result else { return }
-
-                DispatchQueue.main.async(execute: {
-                    completion(asset, result)
-                })
+                completion(asset, result)
             }
         })
     }
