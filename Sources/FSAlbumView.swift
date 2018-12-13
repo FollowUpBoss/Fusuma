@@ -143,9 +143,7 @@ final class FSAlbumView: UIView, UICollectionViewDataSource, UICollectionViewDel
 
         if photoSelectionLimit > 0 && selectedImages.count + 1 <= photoSelectionLimit {
             changeImage(images[(indexPath as NSIndexPath).row])
-
             delegate?.albumShouldEnableDoneButton(isEnabled: true)
-            collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
         } else {
             delegate?.albumbSelectionLimitReached()
             collectionView.deselectItem(at: indexPath, animated: true)
