@@ -29,6 +29,7 @@ class ViewController: UIViewController, FusumaDelegate {
         fusuma.allowMultipleSelection = true
         fusuma.availableModes = [.library, .video, .camera]
         fusuma.photoSelectionLimit = 4
+        fusumaCameraTitle = "Camera"
         fusumaSavesImage = true
 
         present(fusuma, animated: true, completion: nil)

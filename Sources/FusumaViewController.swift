@@ -67,7 +67,7 @@ public var fusumaShotImage: UIImage?
 public var fusumaVideoStartImage: UIImage?
 public var fusumaVideoStopImage: UIImage?
 
-public var fusumaCropImage: Bool  = true
+public var fusumaCropImage: Bool  = false
 public var fusumaSavesImage: Bool = false
 
 public var fusumaCameraRollTitle = "Library"
@@ -276,11 +276,11 @@ public struct ImageMetadata {
                 multiplier: heightRatio,
                 constant: 0)
 
-            cameraView.fullAspectRatioConstraint.isActive     = false
+//            cameraView.fullAspectRatioConstraint.isActive     = false
             cameraView.croppedAspectRatioConstraint?.isActive = true
 
         } else {
-            cameraView.fullAspectRatioConstraint.isActive     = true
+//            cameraView.fullAspectRatioConstraint.isActive     = true
             cameraView.croppedAspectRatioConstraint?.isActive = false
         }
         cameraView.initialCaptureDevicePosition = cameraPosition

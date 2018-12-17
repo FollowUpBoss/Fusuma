@@ -160,7 +160,8 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
 
         DispatchQueue.global(qos: .default).async(execute: { () -> Void in
             let videoConnection = imageOutput.connection(with: AVMediaType.video)
-
+            let deviceOrientation = self.currentDeviceOrientation ?? .portrait
+            
             imageOutput.captureStillImageAsynchronously(from: videoConnection!) { (buffer, error) -> Void in
                 self.stopCamera()
 
@@ -169,24 +170,30 @@ final class FSCameraView: UIView, UIGestureRecognizerDelegate {
                     let cgImage = image.cgImage,
                     let delegate = self.delegate,
                     let videoLayer = self.videoLayer
-                else {
-                    return
-                }
+                else { return }
 
                 let rect   = videoLayer.metadataOutputRectConverted(fromLayerRect: videoLayer.bounds)
                 let width  = CGFloat(cgImage.width)
                 let height = CGFloat(cgImage.height)
-
                 let cropRect = CGRect(x: rect.origin.x * width,
                                       y: rect.origin.y * height,
                                       width: rect.size.width * width,
                                       height: rect.size.height * height)
+                guard let img = cgImage.cropping(to: cropRect) else { return }
 
-                guard let img = cgImage.cropping(to: cropRect) else {
-                    return
+                func convertDeviceOrientation(_ orientation: UIDeviceOrientation) -> UIImage.Orientation {
+                    switch orientation {
+                    case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown:
+                        return .right
+                    case .landscapeLeft:
+                        return .up
+                    case .landscapeRight:
+                        return .down
+                    }
                 }
-
-                let croppedUIImage = UIImage(cgImage: img, scale: 1.0, orientation: image.imageOrientation)
+                
+                let imageOrientation = convertDeviceOrientation(deviceOrientation)
+                let croppedUIImage = UIImage(cgImage: img, scale: 1.0, orientation: imageOrientation)
 
                 DispatchQueue.main.async(execute: { () -> Void in
                     delegate.cameraShotFinished(croppedUIImage)
