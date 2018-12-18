@@ -21,7 +21,9 @@ final class FSAlbumViewCell: UICollectionViewCell {
 
     var image: UIImage? {
         didSet {
-            imageView.image = image
+            UIView.transition(with: self.imageView, duration: 0.2, options: [.allowUserInteraction, .allowAnimatedContent, .transitionCrossDissolve], animations: {
+                self.imageView.image = self.image
+            }, completion: nil)
         }
     }
 

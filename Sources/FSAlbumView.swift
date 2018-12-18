@@ -251,6 +251,7 @@ private extension FSAlbumView {
         DispatchQueue.global(qos: .default).async(execute: {
             let options = PHImageRequestOptions()
             options.isNetworkAccessAllowed = true
+            options.deliveryMode = .highQualityFormat
 
             self.imageManager?.requestImage(for: asset,
                                             targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight),
@@ -273,7 +274,7 @@ private extension FSAlbumView {
         DispatchQueue.global(qos: .default).async(execute: {
             let options = PHImageRequestOptions()
             options.isNetworkAccessAllowed = true
-
+            options.deliveryMode = .highQualityFormat
             self.imageManager?.requestImage(for: asset, targetSize: CGSize(width: asset.pixelWidth, height: asset.pixelHeight), contentMode: .aspectFill, options: options) { result, info in
 
             }
